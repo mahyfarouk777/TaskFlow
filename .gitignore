@@ -1,0 +1,11 @@
+
+# Ignore sensitive configuration
+appsettings.json
+appsettings.*.json
+bin/
+obj/
+.vs/
+**/bin/
+**/obj/
+appsettings.json
+appsettings.*.json
