@@ -1,8 +1,81 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿```cshtml
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">Welcome to TaskFlow</h1>
+
+        <p class="col-md-8 fs-5 text-muted">
+            Organize projects, manage tasks, track progress, and keep your
+            team's work in one place.
+        </p>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Projects"
+               asp-action="Index"
+               class="btn btn-primary btn-lg me-2">
+                View Projects
+            </a>
+
+            <a asp-controller="Tasks"
+               asp-action="Index"
+               class="btn btn-outline-primary btn-lg">
+                View Tasks
+            </a>
+        }
+        else
+        {
+            <a asp-area="Identity"
+               asp-page="/Account/Login"
+               class="btn btn-primary btn-lg me-2">
+                Log In
+            </a>
+
+            <a asp-area="Identity"
+               asp-page="/Account/Register"
+               class="btn btn-outline-primary btn-lg">
+                Create Account
+            </a>
+        }
+    </div>
 </div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">Projects</h3>
+                <p class="card-text">
+                    Create projects, review deadlines, and organize related tasks.
+                </p>
+
+                <a asp-controller="Projects"
+                   asp-action="Index"
+                   class="btn btn-outline-primary">
+                    Explore Projects
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">Tasks</h3>
+                <p class="card-text">
+                    Track task priorities, due dates, and completion status.
+                </p>
+
+                <a asp-controller="Tasks"
+                   asp-action="Index"
+                   class="btn btn-outline-primary">
+                    Explore Tasks
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+```

@@ -18,10 +18,10 @@ public class Project
 
     public DateTime? Deadline { get; set; }
 
-    // the user 
+    // the manager
     public string? ProjectManagerId { get; set; }
 
-    public int TaskCount { get; set; }
+    public int TaskCount { get; set; }  
 
     public ICollection<TaskItem> Tasks { get; set; }
         = new List<TaskItem>();

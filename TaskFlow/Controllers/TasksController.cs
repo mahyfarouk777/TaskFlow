@@ -39,7 +39,7 @@ public class TasksController : Controller
 
         if (User.IsInRole("Admin"))
         {
-            // Admin can see all tasks.
+            // Admins can see all tasks.
         }
         else if (User.IsInRole("ProjectManager"))
         {
@@ -173,7 +173,6 @@ public class TasksController : Controller
             if (task.AssignedToUserId != _userManager.GetUserId(User))
                 return Forbid();
 
-            // Team members can update status only.
             return View("UpdateStatus", task);
         }
 
@@ -189,9 +188,7 @@ public class TasksController : Controller
     // POST: Tasks/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(
-        int id,
-        TaskItem input)
+    public async Task<IActionResult> Edit(int id, TaskItem input)
     {
         if (id != input.Id)
             return NotFound();
@@ -233,7 +230,6 @@ public class TasksController : Controller
             return View(input);
         }
 
-        // Managers cannot move tasks into projects they don't manage.
         if (!await CanManageProjectAsync(project))
             return Forbid();
 
@@ -286,9 +282,7 @@ public class TasksController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "TeamMember")]
-    public async Task<IActionResult> UpdateStatus(
-        int id,
-        string status)
+    public async Task<IActionResult> UpdateStatus(int id, string status)
     {
         var task = await _context.Tasks
             .FirstOrDefaultAsync(t => t.Id == id);
@@ -316,7 +310,6 @@ public class TasksController : Controller
         }
 
         task.Status = status;
-
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -365,7 +358,6 @@ public class TasksController : Controller
     }
 
     // Permission helpers
-
     private async Task<bool> CanViewTaskAsync(TaskItem task)
     {
         if (User.IsInRole("Admin"))

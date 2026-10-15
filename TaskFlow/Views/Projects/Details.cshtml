@@ -1,0 +1,97 @@
+﻿```cshtml
+@model TaskFlow.Models.Project
+
+@{
+    ViewData["Title"] = "Project Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>@Model.Name</h1>
+
+    <div class="d-flex gap-2">
+        @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+        {
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary">Edit</a>
+        }
+
+        <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Project Information</h5>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">
+                @(string.IsNullOrWhiteSpace(Model.Description)
+                    ? "No description provided."
+                    : Model.Description)
+            </dd>
+
+            <dt class="col-sm-3">Start Date</dt>
+            <dd class="col-sm-9">@Model.StartDate.ToString("dd MMM yyyy")</dd>
+
+            <dt class="col-sm-3">Deadline</dt>
+            <dd class="col-sm-9">
+                @(Model.Deadline?.ToString("dd MMM yyyy") ?? "Not set")
+            </dd>
+
+            <dt class="col-sm-3">Number of Tasks</dt>
+            <dd class="col-sm-9">@Model.Tasks.Count</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Project Tasks</h2>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+    {
+        <a asp-controller="Tasks"
+           asp-action="Create"
+           asp-route-projectId="@Model.Id"
+           class="btn btn-primary">+ Add Task</a>
+    }
+</div>
+
+@if (Model.Tasks.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Task</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model.Tasks)
+                {
+                    <tr>
+                        <td>@task.Title</td>
+                        <td>@task.Status</td>
+                        <td>@task.Priority</td>
+                        <td>@(task.DueDate?.ToString("dd MMM yyyy") ?? "Not set")</td>
+                        <td>
+                            <a asp-controller="Tasks"
+                               asp-action="Details"
+                               asp-route-id="@task.Id"
+                               class="btn btn-sm btn-outline-primary">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p class="text-muted">No tasks have been added to this project yet.</p>
+}
+```

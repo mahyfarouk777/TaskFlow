@@ -22,11 +22,11 @@ public class TaskItem
 
     public DateTime? DueDate { get; set; }
 
-    // each task --> proj
+    // each task --> 1 proj
     public int ProjectId { get; set; }
 
     public Project? Project { get; set; }
 
-    // assigned user
+    // assigned user to do the task
     public string? AssignedToUserId { get; set; }
 }

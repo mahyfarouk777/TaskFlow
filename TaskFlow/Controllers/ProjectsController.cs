@@ -35,7 +35,7 @@ public class ProjectsController : Controller
 
         if (User.IsInRole("Admin"))
         {
-            // Admin can view every project.
+            // Admins can view all projects.
         }
         else if (User.IsInRole("ProjectManager"))
         {
@@ -45,8 +45,7 @@ public class ProjectsController : Controller
         else if (User.IsInRole("TeamMember"))
         {
             projects = projects.Where(
-                p => p.Tasks.Any(
-                    t => t.AssignedToUserId == user.Id));
+                p => p.Tasks.Any(t => t.AssignedToUserId == user.Id));
         }
         else
         {
@@ -67,7 +66,6 @@ public class ProjectsController : Controller
             .OrderByDescending(p => p.StartDate)
             .ToListAsync();
 
-        // Calculate task counts for the displayed projects.
         foreach (var project in result)
         {
             project.TaskCount = project.Tasks.Count;
@@ -124,16 +122,13 @@ public class ProjectsController : Controller
             if (user == null)
                 return Challenge();
 
-            // Managers can only create projects for themselves.
             project.ProjectManagerId = user.Id;
         }
         else
         {
-            // Admin-created projects are initially unassigned.
             project.ProjectManagerId = null;
         }
 
-        // TaskCount is calculated from the related tasks.
         project.TaskCount = 0;
 
         _context.Projects.Add(project);
@@ -187,13 +182,11 @@ public class ProjectsController : Controller
         if (!ModelState.IsValid)
             return View(input);
 
-        // Update only fields the user is allowed to edit.
         project.Name = input.Name;
         project.Description = input.Description;
         project.StartDate = input.StartDate;
         project.Deadline = input.Deadline;
 
-        // Preserve ProjectManagerId and TaskCount.
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -242,7 +235,6 @@ public class ProjectsController : Controller
     }
 
     // Permission checks
-
     private async Task<bool> CanViewProjectAsync(Project project)
     {
         if (User.IsInRole("Admin"))
