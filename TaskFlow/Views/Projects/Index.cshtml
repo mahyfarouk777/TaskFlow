@@ -1,87 +1,190 @@
-﻿
+﻿```cshtml
 @model IEnumerable<TaskFlow.Models.Project>
 
 @{
     ViewData["Title"] = "Projects";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1>Projects</h1>
-        <p class="text-muted">Manage and track your projects.</p>
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="p-4 p-md-5 mb-4 bg-primary text-white rounded-4 shadow">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+            <div>
+                <span class="badge bg-white text-primary rounded-pill px-3 py-2 mb-3">
+                    Project Management
+                </span>
+
+                <h1 class="display-5 fw-bold mb-3">Projects</h1>
+
+                <p class="fs-5 text-white-50 mb-0">
+                    Manage your projects, monitor deadlines, and keep track of tasks.
+                </p>
+            </div>
+
+            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+            {
+                <a asp-action="Create" class="btn btn-light text-primary px-4">
+                    + New Project
+                </a>
+            }
+
+        </div>
     </div>
 
-    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
-    {
-        <a asp-action="Create" class="btn btn-primary">+ New Project</a>
-    }
+    <!-- Project List Card -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <!-- Search -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+                <div>
+                    <h4 class="fw-bold mb-1">All Projects</h4>
+                    <p class="text-muted mb-0">
+                        Browse and manage your projects.
+                    </p>
+                </div>
+
+                <form asp-action="Index" method="get" class="w-100" style="max-width: 450px;">
+                    <div class="input-group">
+                        <input name="searchString"
+                               value="@ViewData["CurrentFilter"]"
+                               class="form-control"
+                               placeholder="Search projects..."
+                               aria-label="Search projects" />
+
+                        <button type="submit" class="btn btn-primary">
+                            Search
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Clear
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+
+            <hr class="mb-4" />
+
+            @if (Model.Any())
+            {
+                <!-- Bootstrap Responsive Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th class="px-3 py-3">Project</th>
+                                <th class="py-3">Description</th>
+                                <th class="py-3">Start Date</th>
+                                <th class="py-3">Deadline</th>
+                                <th class="py-3 text-center">Tasks</th>
+                                <th class="py-3 text-end px-3">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var project in Model)
+                            {
+                                <tr>
+                                    <td class="px-3 py-3">
+                                        <span class="fw-semibold">
+                                            @project.Name
+                                        </span>
+                                    </td>
+
+                                    <td class="py-3">
+                                        <span class="text-muted">
+                                            @(string.IsNullOrWhiteSpace(project.Description)
+                                                ? "No description"
+                                                : project.Description)
+                                        </span>
+                                    </td>
+
+                                    <td class="py-3 text-nowrap">
+                                        @project.StartDate.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    <td class="py-3 text-nowrap">
+                                        @if (project.Deadline.HasValue)
+                                        {
+                                            @project.Deadline.Value.ToString("dd MMM yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Not set</span>
+                                        }
+                                    </td>
+
+                                    <td class="py-3 text-center">
+                                        <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
+                                            @project.Tasks.Count
+                                        </span>
+                                    </td>
+
+                                    <td class="text-end px-3 py-3">
+                                        <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+                                            <a asp-action="Details"
+                                               asp-route-id="@project.Id"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Details
+                                            </a>
+
+                                            @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                                            {
+                                                <a asp-action="Edit"
+                                                   asp-route-id="@project.Id"
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    Edit
+                                                </a>
+
+                                                <a asp-action="Delete"
+                                                   asp-route-id="@project.Id"
+                                                   class="btn btn-sm btn-outline-danger">
+                                                    Delete
+                                                </a>
+                                            }
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+            else
+            {
+                <!-- Bootstrap Empty State Alert -->
+                <div class="alert alert-info border-0 rounded-4 text-center py-5 mb-0">
+                    <h5 class="fw-bold mb-2">No Projects Found</h5>
+
+                    <p class="mb-3">
+                        No projects match your search. Try a different keyword or create a new project.
+                    </p>
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary px-4">
+                            + Create Project
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" class="btn btn-outline-primary px-4">
+                            Clear Search
+                        </a>
+                    }
+                </div>
+            }
+
+        </div>
+    </div>
+
 </div>
-
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="input-group">
-        <input name="searchString"
-               value="@ViewData["CurrentFilter"]"
-               class="form-control"
-               placeholder="Search projects..." />
-
-        <button type="submit" class="btn btn-outline-primary">Search</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
-    </div>
-</form>
-
-@if (Model.Any())
-{
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Start Date</th>
-                    <th>Deadline</th>
-                    <th>Tasks</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var project in Model)
-                {
-                    <tr>
-                        <td class="fw-semibold">@project.Name</td>
-                        <td>
-                            @(string.IsNullOrWhiteSpace(project.Description)
-                                ? "No description"
-                                : project.Description)
-                        </td>
-                        <td>@project.StartDate.ToString("dd MMM yyyy")</td>
-                        <td>@(project.Deadline?.ToString("dd MMM yyyy") ?? "Not set")</td>
-                        <td>
-                            <span class="badge bg-secondary">@project.Tasks.Count</span>
-                        </td>
-                        <td>
-                            <div class="d-flex gap-2 flex-wrap">
-                                <a asp-action="Details" asp-route-id="@project.Id"
-                                   class="btn btn-sm btn-outline-primary">Details</a>
-
-                                @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
-                                {
-                                    <a asp-action="Edit" asp-route-id="@project.Id"
-                                       class="btn btn-sm btn-outline-secondary">Edit</a>
-
-                                    <a asp-action="Delete" asp-route-id="@project.Id"
-                                       class="btn btn-sm btn-outline-danger">Delete</a>
-                                }
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
-else
-{
-    <div class="alert alert-info">
-        No projects found. Try another search or create a project.
-    </div>
-}
+```

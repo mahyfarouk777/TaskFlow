@@ -199,9 +199,17 @@ public class TasksController : Controller
 
         if (task == null)
             return NotFound();
-
-        if (User.IsInRole("TeamMember"))
+        if (User.IsInRole("TeamMember") &&
+            !User.IsInRole("Admin") &&
+            !User.IsInRole("ProjectManager"))
+        {
             return Forbid();
+        }
+
+        if (!await CanManageTaskAsync(task))
+        {
+            return Forbid();
+        }
 
         if (!await CanManageTaskAsync(task))
             return Forbid();

@@ -1,61 +1,140 @@
-﻿
-@model TaskFlow.Models.TaskItem
+﻿@model TaskFlow.Models.TaskItem
 
 @{
     ViewData["Title"] = "Task Details";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>@Model.Title</h1>
-    <a asp-action="Index" class="btn btn-outline-secondary">Back to Tasks</a>
+<div class="p-4 p-md-5 mb-4 rounded-4 text-white"
+     style="background: linear-gradient(135deg, #0d6efd, #084298);">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <span class="badge bg-white text-primary mb-2">Task Management</span>
+            <h1 class="display-6 fw-bold mb-2">@Model.Title</h1>
+            <p class="mb-0 opacity-75">
+                View task information, project details, and current progress.
+            </p>
+        </div>
+
+        <a asp-action="Index" class="btn btn-light rounded-3 px-4">
+            <i class="bi bi-arrow-left me-1"></i> Back to Tasks
+        </a>
+    </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-header bg-white border-0 px-4 pt-4 pb-2">
+        <h5 class="fw-bold mb-1">Task Information</h5>
+        <p class="text-muted small mb-0">Details about this task and its current status.</p>
+    </div>
+
+    <div class="card-body p-4">
         <dl class="row mb-0">
-            <dt class="col-sm-3">Description</dt>
-            <dd class="col-sm-9">
+            <dt class="col-md-3 text-muted mb-2">Task Title</dt>
+            <dd class="col-md-9 fw-semibold mb-4">@Model.Title</dd>
+
+            <dt class="col-md-3 text-muted mb-2">Description</dt>
+            <dd class="col-md-9 mb-4">
                 @(string.IsNullOrWhiteSpace(Model.Description)
                     ? "No description provided."
                     : Model.Description)
             </dd>
 
-            <dt class="col-sm-3">Project</dt>
-            <dd class="col-sm-9">
+            <dt class="col-md-3 text-muted mb-2">Project</dt>
+            <dd class="col-md-9 mb-4">
                 @if (Model.Project != null)
                 {
-                    <a asp-controller="Projects" asp-action="Details"
-                       asp-route-id="@Model.ProjectId">@Model.Project.Name</a>
+                    <a asp-controller="Projects"
+                       asp-action="Details"
+                       asp-route-id="@Model.ProjectId"
+                       class="text-decoration-none fw-semibold">
+                        @Model.Project.Name
+                    </a>
                 }
                 else
                 {
-                    <span>Unknown</span>
+                    <span class="text-muted">Unknown</span>
                 }
             </dd>
 
-            <dt class="col-sm-3">Status</dt>
-            <dd class="col-sm-9">@Model.Status</dd>
+            <dt class="col-md-3 text-muted mb-2">Status</dt>
+            <dd class="col-md-9 mb-4">
+                @if (Model.Status == "Done")
+                {
+                    <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                        @Model.Status
+                    </span>
+                }
+                else if (Model.Status == "In Progress")
+                {
+                    <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">
+                        @Model.Status
+                    </span>
+                }
+                else
+                {
+                    <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">
+                        @Model.Status
+                    </span>
+                }
+            </dd>
 
-            <dt class="col-sm-3">Priority</dt>
-            <dd class="col-sm-9">@Model.Priority</dd>
+            <dt class="col-md-3 text-muted mb-2">Priority</dt>
+            <dd class="col-md-9 mb-4">
+                @if (Model.Priority == "High")
+                {
+                    <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+                        @Model.Priority
+                    </span>
+                }
+                else if (Model.Priority == "Medium")
+                {
+                    <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-2">
+                        @Model.Priority
+                    </span>
+                }
+                else
+                {
+                    <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+                        @Model.Priority
+                    </span>
+                }
+            </dd>
 
-            <dt class="col-sm-3">Due Date</dt>
-            <dd class="col-sm-9">@(Model.DueDate?.ToString("dd MMM yyyy") ?? "Not set")</dd>
+            <dt class="col-md-3 text-muted mb-2">Due Date</dt>
+            <dd class="col-md-9 mb-0">
+                @if (Model.DueDate.HasValue)
+                {
+                    <span>@Model.DueDate.Value.ToString("dd MMM yyyy")</span>
+                }
+                else
+                {
+                    <span class="text-muted">Not set</span>
+                }
+            </dd>
         </dl>
     </div>
 </div>
 
-<div class="mt-3 d-flex gap-2">
+<div class="d-flex flex-wrap gap-2">
     @if (User.IsInRole("Admin") || User.IsInRole("ProjectManager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id"
-           class="btn btn-primary">Edit Task</a>
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary rounded-3 px-4">
+            Edit Task
+        </a>
     }
     else if (User.IsInRole("TeamMember"))
     {
-        <a asp-action="UpdateStatus" asp-route-id="@Model.Id"
-           class="btn btn-success">Update Status</a>
+        <a asp-action="UpdateStatus"
+           asp-route-id="@Model.Id"
+           class="btn btn-success rounded-3 px-4">
+            Update Status
+        </a>
     }
 
-    <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+    <a asp-action="Index"
+       class="btn btn-outline-secondary rounded-3 px-4">
+        Back to Tasks
+    </a>
 </div>

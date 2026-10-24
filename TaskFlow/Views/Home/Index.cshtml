@@ -1,80 +1,167 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Home";
 }
 
-<div class="p-5 mb-4 bg-light rounded-3">
-    <div class="container-fluid py-3">
-        <h1 class="display-5 fw-bold">Welcome to TaskFlow</h1>
+<div class="container py-5">
 
-        <p class="col-md-8 fs-5 text-muted">
-            Organize projects, manage tasks, track progress, and keep your
-            team's work in one place.
-        </p>
+    <!-- Hero Section -->
+    <div class="p-4 p-md-5 mb-5 rounded-4 text-white shadow"
+         style="background: linear-gradient(120deg, #172554, #1d4ed8);">
 
-        @if (User.Identity?.IsAuthenticated == true)
-        {
-            <a asp-controller="Projects"
-               asp-action="Index"
-               class="btn btn-primary btn-lg me-2">
-                View Projects
-            </a>
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge rounded-pill bg-light text-primary mb-3 px-3 py-2">
+                    PROJECT MANAGEMENT
+                </span>
 
-            <a asp-controller="Tasks"
-               asp-action="Index"
-               class="btn btn-outline-primary btn-lg">
-                View Tasks
-            </a>
-        }
-        else
-        {
-            <a asp-area="Identity"
-               asp-page="/Account/Login"
-               class="btn btn-primary btn-lg me-2">
-                Log In
-            </a>
+                <h1 class="display-5 fw-bold mb-3">
+                    Welcome to TaskFlow
+                </h1>
 
-            <a asp-area="Identity"
-               asp-page="/Account/Register"
-               class="btn btn-outline-primary btn-lg">
-                Create Account
-            </a>
-        }
-    </div>
-</div>
-
-<div class="row g-4 mt-2">
-    <div class="col-md-6">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">Projects</h3>
-                <p class="card-text">
-                    Create projects, review deadlines, and organize related tasks.
+                <p class="fs-5 mb-4 text-white-50">
+                    Bring your projects, tasks, and team together.
+                    Plan smarter, stay organized, and keep work moving forward.
                 </p>
 
-                <a asp-controller="Projects"
-                   asp-action="Index"
-                   class="btn btn-outline-primary">
-                    Explore Projects
-                </a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Projects"
+                       asp-action="Index"
+                       class="btn btn-light btn-lg fw-semibold me-2 mb-2">
+                        Explore Projects <span aria-hidden="true">&rarr;</span>
+                    </a>
+
+                    <a asp-controller="Tasks"
+                       asp-action="Index"
+                       class="btn btn-outline-light btn-lg mb-2">
+                        View Tasks
+                    </a>
+                }
+                else
+                {
+                    <a asp-area="Identity"
+                       asp-page="/Account/Register"
+                       class="btn btn-light btn-lg fw-semibold me-2 mb-2">
+                        Get Started <span aria-hidden="true">&rarr;</span>
+                    </a>
+
+                    <a asp-area="Identity"
+                       asp-page="/Account/Login"
+                       class="btn btn-outline-light btn-lg mb-2">
+                        Sign In
+                    </a>
+                }
+            </div>
+
+            <div class="col-lg-4 d-none d-lg-block text-center">
+                <div class="bg-white bg-opacity-10 rounded-4 p-4">
+                    <div class="display-1 fw-bold">TF</div>
+                    <p class="mb-0 text-white-50">
+                        Plan. Track. Deliver.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">Tasks</h3>
-                <p class="card-text">
-                    Track task priorities, due dates, and completion status.
-                </p>
+    <!-- Section Heading -->
+    <div class="d-flex flex-column flex-sm-row
+        justify-content-between align-items-sm-end mb-4 gap-2">
+        <div>
+            <h2 class="h3 fw-bold mb-2">Everything in one place</h2>
+            <p class="text-secondary mb-0">
+                The tools you need to keep your work on track.
+            </p>
+        </div>
+    </div>
 
-                <a asp-controller="Tasks"
-                   asp-action="Index"
-                   class="btn btn-outline-primary">
-                    Explore Tasks
-                </a>
+    <!-- Feature Cards -->
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="d-flex align-items-center justify-content-center
+                        rounded-3 bg-primary bg-opacity-10 text-primary mb-4"
+                         style="width: 56px; height: 56px;">
+                        <span class="fs-3 fw-bold" aria-hidden="true">P</span>
+                    </div>
+
+                    <h3 class="h4 fw-bold mb-3">Project Management</h3>
+
+                    <p class="text-secondary mb-4">
+                        Organize projects, manage deadlines, review project
+                        details, and keep related work structured.
+                    </p>
+
+                    <a asp-controller="Projects"
+                       asp-action="Index"
+                       class="btn btn-outline-primary fw-semibold">
+                        Explore Projects <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-lg-5">
+
+                    <div class="d-flex align-items-center justify-content-center
+                        rounded-3 bg-success bg-opacity-10 text-success mb-4"
+                         style="width: 56px; height: 56px;">
+                        <span class="fs-3 fw-bold" aria-hidden="true">T</span>
+                    </div>
+
+                    <h3 class="h4 fw-bold mb-3">Task Tracking</h3>
+
+                    <p class="text-secondary mb-4">
+                        Review assigned tasks, monitor due dates, and
+                        track completion to stay focused on priorities.
+                    </p>
+
+                    <a asp-controller="Tasks"
+                       asp-action="Index"
+                       class="btn btn-outline-success fw-semibold">
+                        Explore Tasks <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Banner -->
+    <div class="mt-5 p-4 rounded-4 border bg-light">
+        <div class="row align-items-center g-3">
+            <div class="col-md">
+                <h3 class="h5 fw-bold mb-1">Stay organized. Make progress.</h3>
+                <p class="text-secondary mb-0">
+                    Keep project information and task management accessible
+                    from one workspace.
+                </p>
+            </div>
+
+            <div class="col-md-auto">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Projects"
+                       asp-action="Index"
+                       class="btn btn-primary px-4">
+                        Open Workspace
+                    </a>
+                }
+                else
+                {
+                    <a asp-area="Identity"
+                       asp-page="/Account/Register"
+                       class="btn btn-primary px-4">
+                        Create an Account
+                    </a>
+                }
             </div>
         </div>
     </div>
+
 </div>

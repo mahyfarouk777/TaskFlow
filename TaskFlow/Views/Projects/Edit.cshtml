@@ -1,50 +1,143 @@
-﻿
+﻿```cshtml
 @model TaskFlow.Models.Project
 
 @{
     ViewData["Title"] = "Edit Project";
 }
 
-<h1>Edit Project</h1>
-<p class="text-muted">Update the project details.</p>
+<div class="container py-5">
 
-<div class="row">
-    <div class="col-md-8 col-lg-6">
-        <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
-            <input type="hidden" asp-for="Id" />
+    <!-- Header -->
+    <div class="p-4 p-md-5 mb-4 bg-primary text-white rounded-4 shadow">
+        <span class="badge bg-white text-primary rounded-pill px-3 py-2 mb-3">
+            Project Management
+        </span>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <h1 class="display-5 fw-bold mb-3">Edit Project</h1>
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="StartDate" class="form-label"></label>
-                <input asp-for="StartDate" type="date" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Deadline" class="form-label"></label>
-                <input asp-for="Deadline" type="date" class="form-control" />
-                <span asp-validation-for="Deadline" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-        </form>
+        <p class="fs-5 text-white-50 mb-0">
+            Update your project details and keep everything organized.
+        </p>
     </div>
+
+    <!-- Edit Form -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="mb-4">
+                        <h4 class="fw-bold mb-2">Project Information</h4>
+                        <p class="text-muted mb-0">
+                            Make the necessary changes to the fields below.
+                        </p>
+                    </div>
+
+                    <hr class="mb-4" />
+
+                    <form asp-action="Edit"
+                          asp-route-id="@Model.Id"
+                          method="post">
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <!-- Project Name -->
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                Project Name
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter project name" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-semibold">
+                                Description
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Describe the project and its objectives"></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger small">
+                            </span>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="row g-3 mb-4">
+
+                            <div class="col-md-6">
+                                <label asp-for="StartDate"
+                                       class="form-label fw-semibold">
+                                    Start Date
+                                </label>
+
+                                <input asp-for="StartDate"
+                                       type="date"
+                                       class="form-control" />
+
+                                <span asp-validation-for="StartDate"
+                                      class="text-danger small">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Deadline"
+                                       class="form-label fw-semibold">
+                                    Deadline
+                                </label>
+
+                                <input asp-for="Deadline"
+                                       type="date"
+                                       class="form-control" />
+
+                                <span asp-validation-for="Deadline"
+                                      class="text-danger small">
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary px-4">
+                                Save Changes
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary px-4">
+                                Cancel
+                            </a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+```
