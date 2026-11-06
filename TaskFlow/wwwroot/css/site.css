@@ -1,31 +1,470 @@
-html {
-  font-size: 14px;
-}
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+:root {
+    --tf-bg: #101312;
+    --tf-surface: #191e1b;
+    --tf-surface-2: #202722;
+    --tf-border: #303a32;
+    --tf-lime: #c5f36b;
+    --tf-lime-dark: #a5d94c;
+    --tf-text: #f1f4ed;
+    --tf-muted: #9ba69b;
+    --tf-danger: #ff7777;
 }
 
 body {
-  margin-bottom: 60px;
+    background: var(--tf-bg);
+    color: var(--tf-text);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* General layout */
+
+.tf-page {
+    max-width: 1200px;
+    margin: auto;
+    padding: 55px 24px;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.tf-muted {
+    color: var(--tf-muted) !important;
+}
+
+.tf-accent {
+    color: var(--tf-lime) !important;
+}
+
+.tf-eyebrow {
+    color: var(--tf-lime);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+}
+
+/* Hero */
+
+.tf-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(125deg, #202c22, #172019 65%, #263728);
+    border: 1px solid #374737;
+    border-radius: 24px;
+    padding: 65px 55px;
+}
+
+    .tf-hero::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        right: -100px;
+        top: -120px;
+        border: 1px solid rgba(197, 243, 107, .15);
+        border-radius: 50%;
+        box-shadow: 0 0 0 35px rgba(197,243,107,.025), 0 0 0 70px rgba(197,243,107,.025);
+        pointer-events: none;
+    }
+
+    .tf-hero h1 {
+        font-size: clamp(2.7rem, 5vw, 4.5rem);
+        font-weight: 850;
+        letter-spacing: -3px;
+        line-height: 1.05;
+    }
+
+    .tf-hero p {
+        color: #bdc9bb;
+        max-width: 580px;
+        line-height: 1.8;
+    }
+
+/* Cards */
+
+.tf-card {
+    height: 100%;
+    background: var(--tf-surface);
+    border: 1px solid var(--tf-border);
+    border-radius: 18px;
+    padding: 28px;
+    transition: .25s ease;
+}
+
+    .tf-card:hover {
+        transform: translateY(-5px);
+        border-color: #829c5b;
+        background: #1d251f;
+    }
+
+.tf-card-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px;
+    background: rgba(197,243,107,.12);
+    color: var(--tf-lime);
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+}
+
+/* Buttons */
+
+.btn-tf {
+    background: var(--tf-lime);
+    color: #182016;
+    border: 1px solid var(--tf-lime);
+    font-weight: 750;
+    padding: 12px 22px;
+    border-radius: 10px;
+    transition: .2s ease;
+}
+
+    .btn-tf:hover {
+        background: var(--tf-lime-dark);
+        color: #101810;
+        transform: translateY(-2px);
+    }
+
+.btn-tf-outline {
+    background: transparent;
+    color: var(--tf-text);
+    border: 1px solid #64705f;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 650;
+    transition: .2s ease;
+}
+
+    .btn-tf-outline:hover {
+        background: rgba(197,243,107,.1);
+        color: var(--tf-lime);
+        border-color: var(--tf-lime);
+    }
+
+/* Page headers */
+
+.tf-page-header {
+    background: linear-gradient(120deg, #202c22, #171e19);
+    border: 1px solid var(--tf-border);
+    border-radius: 20px;
+    padding: 38px;
+    margin-bottom: 30px;
+}
+
+    .tf-page-header h1 {
+        font-size: 2.7rem;
+        font-weight: 850;
+        letter-spacing: -1.5px;
+    }
+
+/* Forms */
+
+.tf-form-card {
+    background: var(--tf-surface);
+    border: 1px solid var(--tf-border);
+    border-radius: 20px;
+    padding: 38px;
+}
+
+    .tf-form-card .form-control,
+    .tf-form-card .form-select {
+        background: #111713;
+        color: var(--tf-text);
+        border: 1px solid #39443b;
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+
+        .tf-form-card .form-control:focus,
+        .tf-form-card .form-select:focus {
+            background: #111713;
+            color: white;
+            border-color: var(--tf-lime);
+            box-shadow: 0 0 0 3px rgba(197,243,107,.12);
+        }
+
+        .tf-form-card .form-control::placeholder {
+            color: #778278;
+        }
+
+    .tf-form-card .form-label {
+        color: #dce5d9;
+        font-weight: 650;
+    }
+
+/* Tables */
+
+.tf-table {
+    color: var(--tf-text);
+    margin-bottom: 0;
+}
+
+    .tf-table th {
+        color: var(--tf-muted);
+        background: #202722;
+        font-size: .72rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 17px;
+        border-color: var(--tf-border);
+    }
+
+    .tf-table td {
+        background: var(--tf-surface);
+        color: var(--tf-text);
+        padding: 18px 17px;
+        border-color: var(--tf-border);
+    }
+
+    .tf-table tbody tr:hover td {
+        background: #232d25;
+    }
+
+/* Badges */
+
+.tf-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 30px;
+    background: rgba(197,243,107,.12);
+    color: var(--tf-lime);
+    font-size: .75rem;
+    font-weight: 750;
+}
+
+/* Information panels */
+
+.tf-info {
+    background: var(--tf-surface-2);
+    border: 1px solid var(--tf-border);
+    border-radius: 13px;
+    padding: 19px;
+    height: 100%;
+}
+
+    .tf-info small {
+        display: block;
+        color: var(--tf-muted);
+        margin-bottom: 8px;
+    }
+
+    .tf-info strong {
+        color: var(--tf-text);
+    }
+
+/* Danger */
+
+.tf-danger {
+    border: 1px solid rgba(255,119,119,.35);
+    background: rgba(255,119,119,.08);
+    color: #ffaaaa;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+/* Footer / links */
+
+.tf-link {
+    color: var(--tf-lime);
+    text-decoration: none;
+    font-weight: 650;
+}
+
+    .tf-link:hover {
+        color: white;
+    }
+
+hr {
+    border-color: var(--tf-border);
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .tf-hero {
+        padding: 40px 25px;
+    }
+
+    .tf-page-header {
+        padding: 27px;
+    }
+
+    .tf-form-card {
+        padding: 25px;
+    }
+
+    .tf-hero h1 {
+        letter-spacing: -1.5px;
+    }
+    /* NAVBAR */
+
+    .tf-navbar {
+        background: #191e1b;
+        border-bottom: 1px solid #303a32;
+        padding: 16px 0;
+    }
+
+    .tf-brand {
+        color: #f1f4ed !important;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .tf-brand-mark {
+        color: #c5f36b;
+        font-weight: 900;
+        margin-right: 6px;
+    }
+
+    .tf-navbar .nav-link {
+        color: #9ba69b !important;
+        font-weight: 500;
+        padding: 10px 14px !important;
+        transition: color .2s ease;
+    }
+
+        .tf-navbar .nav-link:hover {
+            color: #c5f36b !important;
+        }
+
+    .tf-navbar .navbar-toggler {
+        border-color: #303a32;
+    }
+
+    .tf-navbar .navbar-toggler-icon {
+        filter: invert(1);
+    }
+
+    /* FOOTER */
+
+    .tf-footer {
+        background: #191e1b;
+        border-top: 1px solid #303a32;
+        color: #9ba69b;
+        padding: 22px 0;
+        margin-top: 60px;
+    }
+
+        .tf-footer a {
+            color: #c5f36b;
+            text-decoration: none;
+        }
+
+            .tf-footer a:hover {
+                text-decoration: underline;
+            }
+
+    /* AUTHENTICATION PAGES */
+
+    .tf-auth-page {
+        min-height: 75vh;
+        display: grid;
+        grid-template-columns: minmax(320px, 480px) minmax(300px, 1fr);
+        align-items: center;
+        justify-content: center;
+        gap: 70px;
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 60px 24px;
+    }
+
+    .tf-auth-card {
+        background: #191e1b;
+        border: 1px solid #303a32;
+        border-radius: 22px;
+        padding: 38px;
+        width: 100%;
+    }
+
+    .tf-auth-title {
+        color: #f1f4ed;
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        margin-bottom: 12px;
+    }
+
+    .tf-auth-card .form-label {
+        color: #f1f4ed;
+        font-weight: 600;
+    }
+
+    .tf-input {
+        background: #101312 !important;
+        color: #f1f4ed !important;
+        border: 1px solid #303a32 !important;
+        border-radius: 10px !important;
+        padding: 13px 15px !important;
+    }
+
+        .tf-input:focus {
+            border-color: #c5f36b !important;
+            box-shadow: 0 0 0 3px rgba(197, 243, 107, .12) !important;
+        }
+
+        .tf-input::placeholder {
+            color: #69756a;
+        }
+
+    .tf-auth-card .form-check-input {
+        background-color: #101312;
+        border-color: #59645a;
+    }
+
+        .tf-auth-card .form-check-input:checked {
+            background-color: #c5f36b;
+            border-color: #c5f36b;
+        }
+
+    .tf-auth-divider {
+        height: 1px;
+        background: #303a32;
+        margin: 26px 0;
+    }
+
+    .tf-auth-side {
+        align-items: center;
+        padding: 35px;
+    }
+
+        .tf-auth-side h2 {
+            color: #f1f4ed;
+            font-size: 2.7rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            max-width: 400px;
+            margin-bottom: 18px;
+        }
+
+        .tf-auth-side p {
+            max-width: 400px;
+            line-height: 1.8;
+        }
+
+    .tf-auth-mark {
+        color: #c5f36b;
+        font-size: 8rem;
+        font-weight: 900;
+        letter-spacing: -12px;
+        line-height: 1.2;
+        margin-bottom: 25px;
+    }
+
+    @media (max-width: 767px) {
+        .tf-auth-page {
+            display: block;
+            padding: 35px 16px;
+        }
+
+        .tf-auth-card {
+            padding: 26px;
+        }
+
+        .tf-auth-title {
+            font-size: 2rem;
+        }
+    }
+
+
 }

@@ -2,144 +2,173 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="container py-5">
+<div class="tf-page">
 
-    <!-- Hero Section -->
-    <div class="p-4 p-md-5 mb-5 rounded-4 text-white shadow"
-         style="background: linear-gradient(120deg, #172554, #1d4ed8);">
+    <!-- Hero -->
+    <section class="tf-hero mb-5">
+        <div class="row align-items-center position-relative">
+            <div class="col-lg-8" style="z-index:1">
 
-        <div class="row align-items-center g-4">
-            <div class="col-lg-8">
-                <span class="badge rounded-pill bg-light text-primary mb-3 px-3 py-2">
-                    PROJECT MANAGEMENT
-                </span>
+                <div class="tf-eyebrow mb-4">
+                    <span class="me-2">✳</span> YOUR WORKSPACE, REIMAGINED
+                </div>
 
-                <h1 class="display-5 fw-bold mb-3">
-                    Welcome to TaskFlow
+                <h1 class="mb-4">
+                    Make work<br />
+                    <span style="color:var(--tf-lime)">flow better.</span>
                 </h1>
 
-                <p class="fs-5 mb-4 text-white-50">
-                    Bring your projects, tasks, and team together.
-                    Plan smarter, stay organized, and keep work moving forward.
+                <p class="fs-5 mb-4">
+                    One workspace. Every project. Every task.
+                    Bring clarity to your workflow and turn plans
+                    into meaningful progress.
                 </p>
 
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <a asp-controller="Projects"
                        asp-action="Index"
-                       class="btn btn-light btn-lg fw-semibold me-2 mb-2">
-                        Explore Projects <span aria-hidden="true">&rarr;</span>
+                       class="btn btn-tf me-2 mb-2">
+                        Explore workspace →
                     </a>
 
                     <a asp-controller="Tasks"
                        asp-action="Index"
-                       class="btn btn-outline-light btn-lg mb-2">
-                        View Tasks
+                       class="btn btn-tf-outline mb-2">
+                        View tasks
                     </a>
                 }
                 else
                 {
                     <a asp-area="Identity"
                        asp-page="/Account/Register"
-                       class="btn btn-light btn-lg fw-semibold me-2 mb-2">
-                        Get Started <span aria-hidden="true">&rarr;</span>
+                       class="btn btn-tf me-2 mb-2">
+                        Get started →
                     </a>
 
                     <a asp-area="Identity"
                        asp-page="/Account/Login"
-                       class="btn btn-outline-light btn-lg mb-2">
-                        Sign In
+                       class="btn btn-tf-outline mb-2">
+                        Sign in
                     </a>
                 }
+
             </div>
 
-            <div class="col-lg-4 d-none d-lg-block text-center">
-                <div class="bg-white bg-opacity-10 rounded-4 p-4">
-                    <div class="display-1 fw-bold">TF</div>
-                    <p class="mb-0 text-white-50">
-                        Plan. Track. Deliver.
-                    </p>
+            <div class="col-lg-4 d-none d-lg-flex justify-content-center">
+                <div class="text-center position-relative"
+                     style="z-index:1">
+
+                    <div style="font-size:8rem;font-weight:900;
+                        color:var(--tf-lime);
+                        letter-spacing:-12px;">
+                        TF.
+                    </div>
+
+                    <div class="tf-eyebrow">
+                        PLAN / TRACK / DELIVER
+                    </div>
+
+                    <div class="mt-4 p-3 rounded-4"
+                         style="background:rgba(0,0,0,.2);
+                        border:1px solid rgba(197,243,107,.2)">
+                        <div class="d-flex align-items-center gap-2">
+                            <span style="color:var(--tf-lime)">●</span>
+                            <span class="small text-white">
+                                Built for better workflows
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Section Heading -->
-    <div class="d-flex flex-column flex-sm-row
-        justify-content-between align-items-sm-end mb-4 gap-2">
+    <!-- Section heading -->
+    <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h2 class="h3 fw-bold mb-2">Everything in one place</h2>
-            <p class="text-secondary mb-0">
-                The tools you need to keep your work on track.
+            <div class="tf-eyebrow mb-2">THE WORKFLOW</div>
+            <h2 class="fw-bold mb-1">Everything in sync.</h2>
+            <p class="tf-muted mb-0">
+                The essentials to keep your team moving.
             </p>
         </div>
+
+        <span class="tf-muted small d-none d-sm-block">
+            01 — 02
+        </span>
     </div>
 
-    <!-- Feature Cards -->
+    <!-- Feature cards -->
     <div class="row g-4">
 
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm rounded-4">
-                <div class="card-body p-4 p-lg-5">
-
-                    <div class="d-flex align-items-center justify-content-center
-                        rounded-3 bg-primary bg-opacity-10 text-primary mb-4"
-                         style="width: 56px; height: 56px;">
-                        <span class="fs-3 fw-bold" aria-hidden="true">P</span>
-                    </div>
-
-                    <h3 class="h4 fw-bold mb-3">Project Management</h3>
-
-                    <p class="text-secondary mb-4">
-                        Organize projects, manage deadlines, review project
-                        details, and keep related work structured.
-                    </p>
-
-                    <a asp-controller="Projects"
-                       asp-action="Index"
-                       class="btn btn-outline-primary fw-semibold">
-                        Explore Projects <span aria-hidden="true">&rarr;</span>
-                    </a>
+            <div class="tf-card">
+                <div class="d-flex justify-content-between">
+                    <div class="tf-card-icon">◈</div>
+                    <span class="tf-muted small">01 / PROJECTS</span>
                 </div>
+
+                <h3 class="fw-bold mb-3">Project management.</h3>
+
+                <p class="tf-muted mb-4">
+                    Give every idea a structure. Organize projects,
+                    manage timelines, and keep all the important
+                    details within reach.
+                </p>
+
+                <a asp-controller="Projects"
+                   asp-action="Index"
+                   class="tf-link">
+                    Explore projects →
+                </a>
             </div>
         </div>
 
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm rounded-4">
-                <div class="card-body p-4 p-lg-5">
-
-                    <div class="d-flex align-items-center justify-content-center
-                        rounded-3 bg-success bg-opacity-10 text-success mb-4"
-                         style="width: 56px; height: 56px;">
-                        <span class="fs-3 fw-bold" aria-hidden="true">T</span>
-                    </div>
-
-                    <h3 class="h4 fw-bold mb-3">Task Tracking</h3>
-
-                    <p class="text-secondary mb-4">
-                        Review assigned tasks, monitor due dates, and
-                        track completion to stay focused on priorities.
-                    </p>
-
-                    <a asp-controller="Tasks"
-                       asp-action="Index"
-                       class="btn btn-outline-success fw-semibold">
-                        Explore Tasks <span aria-hidden="true">&rarr;</span>
-                    </a>
+            <div class="tf-card">
+                <div class="d-flex justify-content-between">
+                    <div class="tf-card-icon">⌁</div>
+                    <span class="tf-muted small">02 / TASKS</span>
                 </div>
+
+                <h3 class="fw-bold mb-3">Task tracking.</h3>
+
+                <p class="tf-muted mb-4">
+                    Turn plans into action. Monitor assignments,
+                    prioritize work, and stay on top of deadlines
+                    without losing sight of the bigger picture.
+                </p>
+
+                <a asp-controller="Tasks"
+                   asp-action="Index"
+                   class="tf-link">
+                    Explore tasks →
+                </a>
             </div>
         </div>
 
     </div>
 
-    <!-- Bottom Banner -->
-    <div class="mt-5 p-4 rounded-4 border bg-light">
+    <!-- Bottom section -->
+    <section class="mt-5 p-4 p-md-5 rounded-4"
+             style="background:var(--tf-lime);color:#182016;">
+
         <div class="row align-items-center g-3">
+
             <div class="col-md">
-                <h3 class="h5 fw-bold mb-1">Stay organized. Make progress.</h3>
-                <p class="text-secondary mb-0">
-                    Keep project information and task management accessible
-                    from one workspace.
+                <div class="small fw-bold mb-2"
+                     style="letter-spacing:2px;">
+                    LESS CHAOS. MORE PROGRESS.
+                </div>
+
+                <h2 class="fw-bold mb-2">
+                    Your next move starts here.
+                </h2>
+
+                <p class="mb-0">
+                    Keep your projects organized and your priorities clear.
                 </p>
             </div>
 
@@ -148,20 +177,21 @@
                 {
                     <a asp-controller="Projects"
                        asp-action="Index"
-                       class="btn btn-primary px-4">
-                        Open Workspace
+                       class="btn btn-dark px-4 py-3 fw-bold">
+                        Open workspace →
                     </a>
                 }
                 else
                 {
                     <a asp-area="Identity"
                        asp-page="/Account/Register"
-                       class="btn btn-primary px-4">
-                        Create an Account
+                       class="btn btn-dark px-4 py-3 fw-bold">
+                        Create account →
                     </a>
                 }
             </div>
+
         </div>
-    </div>
+    </section>
 
 </div>

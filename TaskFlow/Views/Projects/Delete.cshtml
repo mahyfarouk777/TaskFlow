@@ -1,116 +1,134 @@
-﻿```cshtml
-@model TaskFlow.Models.Project
+﻿@model TaskFlow.Models.Project
 
 @{
     ViewData["Title"] = "Delete Project";
 }
 
-<div class="container py-5">
+<div class="tf-page">
 
-    <!-- Header -->
-    <div class="p-4 p-md-5 mb-4 bg-danger text-white rounded-4 shadow">
-        <div class="d-flex align-items-center mb-3">
-            <span class="badge bg-white text-danger px-3 py-2 rounded-pill">
-                Project Management
-            </span>
+    <div class="tf-page-header">
+        <div class="tf-eyebrow mb-3" style="color:#ff7777;">
+            WORKSPACE / PROJECTS / DELETE
         </div>
 
-        <h1 class="display-5 fw-bold mb-3">Delete Project</h1>
+        <h1>One last check.</h1>
 
-        <p class="fs-5 mb-0 text-white-50">
-            Review the project details before permanently deleting it.
+        <p class="tf-muted mb-0">
+            Review the project before permanently removing it.
         </p>
     </div>
 
-    <!-- Warning -->
-    <div class="alert alert-warning border-0 rounded-4 shadow-sm p-4 mb-4">
-        <h5 class="fw-bold mb-2">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            Are you sure?
-        </h5>
-        <p class="mb-0">
-            Deleting this project will also delete its associated tasks.
-            This action cannot be undone.
-        </p>
-    </div>
-
-    <!-- Project Details -->
     <div class="row justify-content-center">
-        <div class="col-12 col-lg-8">
+        <div class="col-lg-9">
 
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
+            <!-- Warning -->
+            <div class="tf-danger mb-4">
 
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div>
-                            <h3 class="fw-bold mb-2">@Model.Name</h3>
-                            <p class="text-muted mb-0">
-                                @(Model.Description ?? "No description provided.")
-                            </p>
+                <div class="d-flex gap-3 align-items-start">
+                    <div style="font-size:1.6rem;">⚠</div>
+
+                    <div>
+                        <h5 class="fw-bold mb-2">
+                            This action cannot be undone.
+                        </h5>
+
+                        <p class="mb-0">
+                            Deleting this project will also delete
+                            its associated tasks. Make sure you
+                            really want to continue.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Project Details -->
+            <div class="tf-card">
+
+                <div class="d-flex justify-content-between
+                    align-items-start flex-wrap gap-3 mb-4">
+
+                    <div>
+                        <div class="tf-eyebrow mb-2">
+                            PROJECT TO BE DELETED
                         </div>
 
-                        <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">
-                            Pending Deletion
-                        </span>
+                        <h2 class="fw-bold mb-2">
+                            @Model.Name
+                        </h2>
+
+                        <p class="tf-muted mb-0">
+                            @(Model.Description ?? "No description provided.")
+                        </p>
                     </div>
 
-                    <hr class="my-4" />
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded-3 h-100">
-                                <div class="text-muted small mb-1">Start Date</div>
-                                <div class="fw-semibold">
-                                    @Model.StartDate.ToString("dd MMM yyyy")
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded-3 h-100">
-                                <div class="text-muted small mb-1">Deadline</div>
-                                <div class="fw-semibold">
-                                    @(Model.Deadline?.ToString("dd MMM yyyy") ?? "Not set")
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded-3 h-100">
-                                <div class="text-muted small mb-1">Total Tasks</div>
-                                <div class="fw-semibold">
-                                    @Model.Tasks.Count
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actions -->
-                    <form asp-action="Delete"
-                          asp-route-id="@Model.Id"
-                          method="post"
-                          class="mt-4 pt-3 border-top">
-
-                        <div class="d-flex flex-column flex-sm-row gap-2">
-                            <button type="submit"
-                                    class="btn btn-danger px-4">
-                                <i class="bi bi-trash me-2"></i>
-                                Delete Project
-                            </button>
-
-                            <a asp-action="Index"
-                               class="btn btn-outline-secondary px-4">
-                                Cancel
-                            </a>
-                        </div>
-
-                    </form>
+                    <span class="badge rounded-pill px-3 py-2"
+                          style="background:rgba(255,119,119,.12);
+                        color:#ff7777;">
+                        PENDING DELETION
+                    </span>
 
                 </div>
+
+                <hr class="my-4" />
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <div class="tf-info">
+                            <small>START DATE</small>
+                            <strong>
+                                @Model.StartDate.ToString("dd MMM yyyy")
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="tf-info">
+                            <small>DEADLINE</small>
+                            <strong>
+                                @(Model.Deadline?.ToString("dd MMM yyyy") ?? "Not set")
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="tf-info">
+                            <small>ASSOCIATED TASKS</small>
+                            <strong style="color:#ff7777;font-size:1.5rem;">
+                                @Model.Tasks.Count
+                            </strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Actions -->
+                <form asp-action="Delete"
+                      asp-route-id="@Model.Id"
+                      method="post"
+                      class="mt-4 pt-3 border-top">
+
+                    <div class="d-flex flex-column flex-sm-row
+                        justify-content-between gap-2">
+
+                        <a asp-action="Index"
+                           class="btn btn-tf-outline">
+                            ← Keep project
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-danger px-4">
+                            Delete permanently
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
     </div>
 
 </div>
-```

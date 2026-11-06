@@ -1,79 +1,94 @@
-﻿
-@model TaskFlow.Models.TaskItem
+﻿@model TaskFlow.Models.TaskItem
 
 @{
     ViewData["Title"] = "Update Task Status";
 }
 
-<div class="container py-5">
+<div class="tf-page">
 
-    <div class="p-4 p-md-5 mb-4 bg-primary text-white rounded-4 shadow">
-        <span class="badge bg-white text-primary rounded-pill px-3 py-2 mb-3">
-            Task Management
-        </span>
-        <h1 class="display-5 fw-bold mb-3">Update Task Status</h1>
-        <p class="fs-5 text-white-50 mb-0">
-            Update the progress of your assigned task.
-        </p>
-    </div>
+    <section class="tf-page-header">
+        <div>
+            <div class="tf-eyebrow mb-3">WORKSPACE / TASKS / PROGRESS</div>
+            <h1>Update status<span class="tf-accent">.</span></h1>
+            <p class="tf-muted mb-0">
+                Update the progress of your assigned task.
+            </p>
+        </div>
 
-    <div class="row justify-content-center">
+        <a asp-action="Index" class="btn btn-tf-outline">Back to tasks</a>
+    </section>
+
+    <div class="row justify-content-center mt-4">
         <div class="col-12 col-lg-8">
 
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <h4 class="fw-bold mb-2">@Model.Title</h4>
-                    <p class="text-muted mb-4">
-                        @(Model.Description ?? "No description provided.")
-                    </p>
+            <div class="tf-card mb-4">
+                <div class="tf-eyebrow mb-2">TASK OVERVIEW</div>
+                <h3 class="mb-2">@Model.Title</h3>
 
-                    <hr class="mb-4" />
+                <p class="tf-muted mb-4">
+                    @(Model.Description ?? "No description provided.")
+                </p>
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="p-3 bg-light rounded-3 h-100">
-                                <div class="text-muted small mb-1">Project</div>
-                                <div class="fw-semibold">@(Model.Project?.Name ?? "Unknown")</div>
-                            </div>
-                        </div>
+                <div class="row g-3">
 
-                        <div class="col-md-6">
-                            <div class="p-3 bg-primary-subtle rounded-3 h-100">
-                                <div class="text-primary small mb-1">Current Status</div>
-                                <div class="fw-semibold text-primary">@Model.Status</div>
+                    <div class="col-md-6">
+                        <div class="tf-info h-100">
+                            <div class="tf-eyebrow mb-2">PROJECT</div>
+                            <div class="fw-semibold">
+                                @(Model.Project?.Name ?? "Unknown")
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="tf-info h-100">
+                            <div class="tf-eyebrow mb-2">CURRENT STATUS</div>
+                            <span class="tf-badge @(Model.Status == "Done" ? "tf-status-done" : Model.Status == "In Progress" ? "tf-status-progress" : "tf-status-todo")">
+                                @Model.Status
+                            </span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-4 p-md-5">
-                    <h4 class="fw-bold mb-2">Change Status</h4>
-                    <p class="text-muted mb-4">Select the task's new status.</p>
+            <div class="tf-form-card">
+                <div class="tf-eyebrow mb-2">PROGRESS UPDATE</div>
+                <h4 class="mb-1">Change status</h4>
+                <p class="tf-muted mb-4">
+                    Select the task's new status.
+                </p>
 
-                    <form asp-action="UpdateStatus" asp-route-id="@Model.Id" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <form asp-action="UpdateStatus"
+                      asp-route-id="@Model.Id"
+                      method="post">
 
-                        <div class="mb-4">
-                            <label for="status" class="form-label fw-semibold">New Status</label>
-                            <select id="status" name="status" class="form-select form-select-lg">
-                                <option value="To Do" selected="@(Model.Status == "To Do")">To Do</option>
-                                <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
-                                <option value="Done" selected="@(Model.Status == "Done")">Done</option>
-                            </select>
-                        </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                        <hr class="my-4" />
+                    <div class="mb-4">
+                        <label for="status" class="form-label">New status</label>
 
-                        <div class="d-flex flex-column flex-sm-row gap-2">
-                            <button type="submit" class="btn btn-success px-4">Save Status</button>
-                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
-                        </div>
-                    </form>
-                </div>
+                        <select id="status" name="status" class="form-select form-select-lg">
+                            <option value="To Do" selected="@(Model.Status == "To Do")">To Do</option>
+                            <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
+                            <option value="Done" selected="@(Model.Status == "Done")">Done</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-2 pt-3 border-top">
+                        <button type="submit" class="btn btn-tf px-4">
+                            Save status
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-tf-outline px-4">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
             </div>
 
         </div>
     </div>
+
 </div>
