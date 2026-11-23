@@ -149,6 +149,8 @@
                     <tbody>
                         @foreach (var task in Model.Tasks)
                         {
+                            var statusName = task.TaskStatus?.Name ?? "Unknown";
+
                             <tr>
                                 <td class="ps-4">
                                     <span class="fw-semibold">
@@ -157,8 +159,8 @@
                                 </td>
 
                                 <td>
-                                    <span class="tf-badge">
-                                        @task.Status
+                                    <span class="tf-badge @(statusName == "Done" ? "tf-status-done" : statusName == "In Progress" ? "tf-status-progress" : "tf-status-todo")">
+                                        @statusName
                                     </span>
                                 </td>
 

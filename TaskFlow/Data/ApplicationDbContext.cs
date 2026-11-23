@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Models;
+using TaskStatusModel = TaskFlow.Models.TaskStatus;
 
 namespace TaskFlow.Data;
 
@@ -13,6 +14,7 @@ public class ApplicationDbContext(
     public DbSet<Project> Projects { get; set; }
 
     public DbSet<TaskItem> Tasks { get; set; }
+    public DbSet<TaskStatusModel> TaskStatuses { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Task Details";
+    var statusName = Model.TaskStatus?.Name ?? "Unknown";
 }
 
 <div class="tf-page">
@@ -31,8 +32,8 @@
                 </p>
             </div>
 
-            <span class="tf-badge @(Model.Status == "Done" ? "tf-status-done" : Model.Status == "In Progress" ? "tf-status-progress" : "tf-status-todo")">
-                @Model.Status
+            <span class="tf-badge @(statusName == "Done" ? "tf-status-done" : statusName == "In Progress" ? "tf-status-progress" : "tf-status-todo")">
+                @statusName
             </span>
         </div>
 

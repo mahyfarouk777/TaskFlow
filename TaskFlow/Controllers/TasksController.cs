@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Data;
 using TaskFlow.Models;
+using TaskFlow.ViewModels;
 
 namespace TaskFlow.Controllers;
 
@@ -24,10 +25,7 @@ public class TasksController : Controller
     }
 
     // GET: Tasks
-    public async Task<IActionResult> Index(
-        string? searchString,
-        string? status,
-        string? priority)
+    public async Task<IActionResult> Index(TaskListViewModel model)
     {
         var user = await _userManager.GetUserAsync(User);
 
@@ -35,8 +33,11 @@ public class TasksController : Controller
             return Challenge();
 
         IQueryable<TaskItem> tasks = _context.Tasks
-            .Include(t => t.Project);
+            .Include(t => t.Project)
+            .Include(t => t.TaskStatus)
+            .AsNoTracking();
 
+        // Role-based filtering
         if (User.IsInRole("Admin"))
         {
             // Admins can see all tasks.
@@ -57,27 +58,67 @@ public class TasksController : Controller
             return Forbid();
         }
 
-        if (!string.IsNullOrWhiteSpace(searchString))
+        // Search by title and description
+        if (!string.IsNullOrWhiteSpace(model.SearchTerm))
         {
             tasks = tasks.Where(t =>
-                t.Title.Contains(searchString) ||
+                t.Title.Contains(model.SearchTerm) ||
                 (t.Description != null &&
-                 t.Description.Contains(searchString)));
+                 t.Description.Contains(model.SearchTerm)));
         }
 
-        if (!string.IsNullOrWhiteSpace(status))
-            tasks = tasks.Where(t => t.Status == status);
+        // Filter by status
+        if (model.TaskStatusId.HasValue)
+        {
+            tasks = tasks.Where(t =>
+                t.TaskStatusId == model.TaskStatusId.Value);
+        }
 
-        if (!string.IsNullOrWhiteSpace(priority))
-            tasks = tasks.Where(t => t.Priority == priority);
+        // Filter by priority
+        if (!string.IsNullOrWhiteSpace(model.Priority))
+        {
+            tasks = tasks.Where(t =>
+                t.Priority == model.Priority);
+        }
 
-        ViewData["CurrentFilter"] = searchString;
-        ViewData["CurrentStatus"] = status;
-        ViewData["CurrentPriority"] = priority;
+        // Sorting
+        if (string.Equals(
+            model.SortOrder,
+            "dueDate",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            tasks = tasks
+                .OrderBy(t => t.DueDate == null)
+                .ThenBy(t => t.DueDate);
+        }
+        else
+        {
+            model.SortOrder = "title";
+            tasks = tasks.OrderBy(t => t.Title);
+        }
 
-        return View(await tasks
-            .OrderBy(t => t.DueDate)
-            .ToListAsync());
+        // Pagination
+        model.PageSize = 5;
+        model.PageNumber = Math.Max(1, model.PageNumber);
+
+        model.TotalItems = await tasks.CountAsync();
+
+        model.PageNumber = Math.Min(
+            model.PageNumber,
+            Math.Max(1, model.TotalPages));
+
+        model.Tasks = await tasks
+            .Skip((model.PageNumber - 1) * model.PageSize)
+            .Take(model.PageSize)
+            .ToListAsync();
+
+        // Load statuses for the filter dropdown
+        model.TaskStatuses = await _context.TaskStatuses
+            .AsNoTracking()
+            .OrderBy(s => s.Name)
+            .ToListAsync();
+
+        return View(model);
     }
 
     // GET: Tasks/Details/5
@@ -88,6 +129,7 @@ public class TasksController : Controller
 
         var task = await _context.Tasks
             .Include(t => t.Project)
+            .Include(t => t.TaskStatus)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
@@ -101,10 +143,16 @@ public class TasksController : Controller
 
     // GET: Tasks/Create
     [Authorize(Roles = "Admin,ProjectManager")]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(int? projectId)
     {
-        await LoadProjectsAsync();
-        return View(new TaskItem());
+        await LoadProjectsAsync(projectId);
+        await LoadTaskStatusesAsync();
+        await LoadUsersAsync();
+
+        return View(new TaskItem
+        {
+            ProjectId = projectId ?? 0
+        });
     }
 
     // POST: Tasks/Create
@@ -114,11 +162,14 @@ public class TasksController : Controller
     public async Task<IActionResult> Create(TaskItem input)
     {
         ModelState.Remove(nameof(TaskItem.Project));
-        ModelState.Remove(nameof(TaskItem.AssignedToUserId));
+        ModelState.Remove(nameof(TaskItem.TaskStatus));
 
         if (!ModelState.IsValid)
         {
             await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
+            await LoadUsersAsync(input.AssignedToUserId);
+
             return View(input);
         }
 
@@ -132,21 +183,55 @@ public class TasksController : Controller
                 "Select a valid project.");
 
             await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
+            await LoadUsersAsync(input.AssignedToUserId);
+
             return View(input);
         }
 
         if (!await CanManageProjectAsync(project))
             return Forbid();
 
+        var statusExists = await _context.TaskStatuses
+            .AnyAsync(s => s.Id == input.TaskStatusId);
+
+        if (!statusExists)
+        {
+            ModelState.AddModelError(
+                nameof(input.TaskStatusId),
+                "Select a valid status.");
+
+            await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
+            await LoadUsersAsync(input.AssignedToUserId);
+
+            return View(input);
+        }
+
+        // Only TeamMembers can be assigned to tasks
+        if (input.AssignedToUserId != null &&
+            !await IsTeamMemberAsync(input.AssignedToUserId))
+        {
+            ModelState.AddModelError(
+                nameof(input.AssignedToUserId),
+                "Only team members can be assigned to tasks.");
+
+            await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
+            await LoadUsersAsync(input.AssignedToUserId);
+
+            return View(input);
+        }
+
         var task = new TaskItem
         {
             Title = input.Title,
             Description = input.Description,
-            Status = input.Status,
+            TaskStatusId = input.TaskStatusId,
             Priority = input.Priority,
             DueDate = input.DueDate,
             ProjectId = project.Id,
-            AssignedToUserId = null
+            AssignedToUserId = input.AssignedToUserId
         };
 
         _context.Tasks.Add(task);
@@ -163,16 +248,20 @@ public class TasksController : Controller
 
         var task = await _context.Tasks
             .Include(t => t.Project)
+            .Include(t => t.TaskStatus)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
             return NotFound();
 
-        if (User.IsInRole("TeamMember"))
+        if (User.IsInRole("TeamMember") &&
+            !User.IsInRole("Admin") &&
+            !User.IsInRole("ProjectManager"))
         {
             if (task.AssignedToUserId != _userManager.GetUserId(User))
                 return Forbid();
 
+            await LoadTaskStatusesAsync(task.TaskStatusId);
             return View("UpdateStatus", task);
         }
 
@@ -180,6 +269,7 @@ public class TasksController : Controller
             return Forbid();
 
         await LoadProjectsAsync(task.ProjectId);
+        await LoadTaskStatusesAsync(task.TaskStatusId);
         await LoadUsersAsync(task.AssignedToUserId);
 
         return View(task);
@@ -199,28 +289,24 @@ public class TasksController : Controller
 
         if (task == null)
             return NotFound();
+
         if (User.IsInRole("TeamMember") &&
             !User.IsInRole("Admin") &&
             !User.IsInRole("ProjectManager"))
-        {
             return Forbid();
-        }
-
-        if (!await CanManageTaskAsync(task))
-        {
-            return Forbid();
-        }
 
         if (!await CanManageTaskAsync(task))
             return Forbid();
 
         ModelState.Remove(nameof(TaskItem.Project));
-        ModelState.Remove(nameof(TaskItem.AssignedToUserId));
+        ModelState.Remove(nameof(TaskItem.TaskStatus));
 
         if (!ModelState.IsValid)
         {
             await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
             await LoadUsersAsync(input.AssignedToUserId);
+
             return View(input);
         }
 
@@ -234,29 +320,49 @@ public class TasksController : Controller
                 "Select a valid project.");
 
             await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
             await LoadUsersAsync(input.AssignedToUserId);
+
             return View(input);
         }
 
         if (!await CanManageProjectAsync(project))
             return Forbid();
 
+        var statusExists = await _context.TaskStatuses
+            .AnyAsync(s => s.Id == input.TaskStatusId);
+
+        if (!statusExists)
+        {
+            ModelState.AddModelError(
+                nameof(input.TaskStatusId),
+                "Select a valid status.");
+
+            await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
+            await LoadUsersAsync(input.AssignedToUserId);
+
+            return View(input);
+        }
+
+        // Only TeamMembers can be assigned to tasks
         if (input.AssignedToUserId != null &&
-            !await _context.Users.AnyAsync(
-                u => u.Id == input.AssignedToUserId))
+            !await IsTeamMemberAsync(input.AssignedToUserId))
         {
             ModelState.AddModelError(
                 nameof(input.AssignedToUserId),
-                "Select a valid user.");
+                "Only team members can be assigned to tasks.");
 
             await LoadProjectsAsync(input.ProjectId);
+            await LoadTaskStatusesAsync(input.TaskStatusId);
             await LoadUsersAsync(input.AssignedToUserId);
+
             return View(input);
         }
 
         task.Title = input.Title;
         task.Description = input.Description;
-        task.Status = input.Status;
+        task.TaskStatusId = input.TaskStatusId;
         task.Priority = input.Priority;
         task.DueDate = input.DueDate;
         task.ProjectId = project.Id;
@@ -275,6 +381,8 @@ public class TasksController : Controller
             return NotFound();
 
         var task = await _context.Tasks
+            .Include(t => t.Project)
+            .Include(t => t.TaskStatus)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
@@ -282,6 +390,8 @@ public class TasksController : Controller
 
         if (task.AssignedToUserId != _userManager.GetUserId(User))
             return Forbid();
+
+        await LoadTaskStatusesAsync(task.TaskStatusId);
 
         return View(task);
     }
@@ -290,9 +400,13 @@ public class TasksController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "TeamMember")]
-    public async Task<IActionResult> UpdateStatus(int id, string status)
+    public async Task<IActionResult> UpdateStatus(
+        int id,
+        int TaskStatusId)
     {
         var task = await _context.Tasks
+            .Include(t => t.Project)
+            .Include(t => t.TaskStatus)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
@@ -301,23 +415,21 @@ public class TasksController : Controller
         if (task.AssignedToUserId != _userManager.GetUserId(User))
             return Forbid();
 
-        var allowedStatuses = new[]
-        {
-            "To Do",
-            "In Progress",
-            "Done"
-        };
+        var statusExists = await _context.TaskStatuses
+            .AnyAsync(s => s.Id == TaskStatusId);
 
-        if (!allowedStatuses.Contains(status))
+        if (!statusExists)
         {
             ModelState.AddModelError(
-                nameof(status),
+                nameof(TaskStatusId),
                 "Select a valid status.");
 
+            await LoadTaskStatusesAsync(task.TaskStatusId);
             return View(task);
         }
 
-        task.Status = status;
+        task.TaskStatusId = TaskStatusId;
+
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
@@ -332,6 +444,7 @@ public class TasksController : Controller
 
         var task = await _context.Tasks
             .Include(t => t.Project)
+            .Include(t => t.TaskStatus)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (task == null)
@@ -366,6 +479,7 @@ public class TasksController : Controller
     }
 
     // Permission helpers
+
     private async Task<bool> CanViewTaskAsync(TaskItem task)
     {
         if (User.IsInRole("Admin"))
@@ -417,6 +531,17 @@ public class TasksController : Controller
             _userManager.GetUserId(User);
     }
 
+    // Check whether a user exists and has the TeamMember role
+    private async Task<bool> IsTeamMemberAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        return user != null &&
+            await _userManager.IsInRoleAsync(user, "TeamMember");
+    }
+
+    // Dropdown helpers
+
     private async Task LoadProjectsAsync(int? selectedProject = null)
     {
         IQueryable<Project> projects = _context.Projects;
@@ -436,11 +561,25 @@ public class TasksController : Controller
             selectedProject);
     }
 
+    private async Task LoadTaskStatusesAsync(int? selectedStatus = null)
+    {
+        ViewData["TaskStatusId"] = new SelectList(
+            await _context.TaskStatuses
+                .OrderBy(s => s.Name)
+                .ToListAsync(),
+            "Id",
+            "Name",
+            selectedStatus);
+    }
+
+    // Load only users who have the TeamMember role
     private async Task LoadUsersAsync(string? selectedUser = null)
     {
-        var users = await _context.Users
+        var teamMembers = await _userManager.GetUsersInRoleAsync("TeamMember");
+
+        var users = teamMembers
             .OrderBy(u => u.UserName)
-            .ToListAsync();
+            .ToList();
 
         ViewData["AssignedToUserId"] = new SelectList(
             users,

@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using TaskStatusModel = TaskFlow.Models.TaskStatus;
 
 namespace TaskFlow.Models;
 
@@ -14,19 +15,24 @@ public class TaskItem
     [StringLength(1000)]
     public string? Description { get; set; }
 
+    // Relationship with TaskStatus
     [Required]
-    public string Status { get; set; } = "To Do";
+    public int TaskStatusId { get; set; }
+
+    public TaskStatusModel? TaskStatus { get; set; }
 
     [Required]
+    [StringLength(50)]
     public string Priority { get; set; } = "Medium";
 
     public DateTime? DueDate { get; set; }
 
-    // each task --> 1 proj
+    // Relationship with Project
+    [Required]
     public int ProjectId { get; set; }
 
     public Project? Project { get; set; }
 
-    // assigned user to do the task
+    // Assigned user
     public string? AssignedToUserId { get; set; }
 }

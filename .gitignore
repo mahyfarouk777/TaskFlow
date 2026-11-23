@@ -1,11 +1,9 @@
-
 # Ignore sensitive configuration
-appsettings.json
 appsettings.*.json
+
+# Build files
 bin/
 obj/
 .vs/
 **/bin/
 **/obj/
-appsettings.json
-appsettings.*.json

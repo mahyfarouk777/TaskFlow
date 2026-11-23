@@ -1,4 +1,5 @@
-﻿@model IEnumerable<TaskFlow.Models.TaskItem>
+﻿
+@model TaskFlow.ViewModels.TaskListViewModel
 
 @{
     ViewData["Title"] = "Tasks";
@@ -22,6 +23,7 @@
     </section>
 
     <div class="tf-card mt-4">
+
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
             <div>
                 <div class="tf-eyebrow mb-2">YOUR WORKSPACE</div>
@@ -29,40 +31,51 @@
                 <p class="tf-muted mb-0">Search and filter your tasks below.</p>
             </div>
 
-            <span class="tf-badge">@(Model.Count()) TASKS</span>
+            <span class="tf-badge">@Model.TotalItems TASKS</span>
         </div>
 
         <form asp-action="Index" method="get" class="mb-4">
+            <input type="hidden" name="PageNumber" value="1" />
+
             <div class="row g-2">
 
-                <div class="col-12 col-md-5">
-                    <input name="searchString"
-                           value="@ViewData["CurrentFilter"]"
+                <div class="col-12 col-md-4">
+                    <input asp-for="SearchTerm"
                            class="form-control"
                            placeholder="Search tasks..."
                            aria-label="Search tasks" />
                 </div>
 
-                <div class="col-6 col-md-3">
-                    <select name="status" class="form-select">
+                <div class="col-6 col-md-2">
+                    <select asp-for="TaskStatusId" class="form-select">
                         <option value="">All statuses</option>
-                        <option value="To Do" selected="@(ViewData["CurrentStatus"]?.ToString() == "To Do")">To Do</option>
-                        <option value="In Progress" selected="@(ViewData["CurrentStatus"]?.ToString() == "In Progress")">In Progress</option>
-                        <option value="Done" selected="@(ViewData["CurrentStatus"]?.ToString() == "Done")">Done</option>
+                        @foreach (var status in Model.TaskStatuses)
+                        {
+                            <option value="@status.Id">@status.Name</option>
+                        }
                     </select>
                 </div>
 
                 <div class="col-6 col-md-2">
-                    <select name="priority" class="form-select">
+                    <select asp-for="Priority" class="form-select">
                         <option value="">All priorities</option>
-                        <option value="Low" selected="@(ViewData["CurrentPriority"]?.ToString() == "Low")">Low</option>
-                        <option value="Medium" selected="@(ViewData["CurrentPriority"]?.ToString() == "Medium")">Medium</option>
-                        <option value="High" selected="@(ViewData["CurrentPriority"]?.ToString() == "High")">High</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
                     </select>
                 </div>
 
-                <div class="col-12 col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-tf flex-grow-1">Filter</button>
+                <div class="col-6 col-md-2">
+                    <select asp-for="SortOrder" class="form-select">
+                        <option value="title">Sort by title</option>
+                        <option value="dueDate">Sort by due date</option>
+                    </select>
+                </div>
+
+                <div class="col-6 col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-tf flex-grow-1">
+                        Filter
+                    </button>
                     <a asp-action="Index" class="btn btn-tf-outline">Clear</a>
                 </div>
 
@@ -70,7 +83,8 @@
         </form>
 
         <div class="table-responsive">
-            @if (Model.Any())
+
+            @if (Model.Tasks.Any())
             {
                 <table class="table tf-table align-middle mb-0">
                     <thead>
@@ -85,7 +99,7 @@
                     </thead>
 
                     <tbody>
-                        @foreach (var task in Model)
+                        @foreach (var task in Model.Tasks)
                         {
                             <tr>
                                 <td>
@@ -99,8 +113,12 @@
                                 </td>
 
                                 <td>
-                                    <span class="tf-badge @(task.Status == "Done" ? "tf-status-done" : task.Status == "In Progress" ? "tf-status-progress" : "tf-status-todo")">
-                                        @task.Status
+                                    @{
+                                        var statusName = task.TaskStatus?.Name ?? "Unknown";
+                                    }
+
+                                    <span class="tf-badge @(statusName == "Done" ? "tf-status-done" : statusName == "In Progress" ? "tf-status-progress" : "tf-status-todo")">
+                                        @statusName
                                     </span>
                                 </td>
 
@@ -118,6 +136,7 @@
 
                                 <td>
                                     <div class="d-flex justify-content-end gap-2 flex-wrap">
+
                                         <a asp-action="Details"
                                            asp-route-id="@task.Id"
                                            class="btn btn-sm btn-tf-outline">
@@ -146,6 +165,7 @@
                                                 Update status
                                             </a>
                                         }
+
                                     </div>
                                 </td>
                             </tr>
@@ -154,8 +174,56 @@
                 </table>
 
                 <div class="tf-muted small mt-3">
-                    Showing @Model.Count() task(s)
+                    Showing @Model.Tasks.Count() of @Model.TotalItems task(s)
                 </div>
+
+                @if (Model.TotalPages > 1)
+                {
+                    <nav class="mt-4" aria-label="Task pagination">
+                        <ul class="pagination justify-content-center">
+
+                            <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+                                <a class="page-link"
+                                   asp-action="Index"
+                                   asp-route-SearchTerm="@Model.SearchTerm"
+                                   asp-route-TaskStatusId="@Model.TaskStatusId"
+                                   asp-route-Priority="@Model.Priority"
+                                   asp-route-SortOrder="@Model.SortOrder"
+                                   asp-route-PageNumber="@(Model.PageNumber - 1)">
+                                    Previous
+                                </a>
+                            </li>
+
+                            @for (int pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+                            {
+                                <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-SearchTerm="@Model.SearchTerm"
+                                       asp-route-TaskStatusId="@Model.TaskStatusId"
+                                       asp-route-Priority="@Model.Priority"
+                                       asp-route-SortOrder="@Model.SortOrder"
+                                       asp-route-PageNumber="@pageNumber">
+                                        @pageNumber
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link"
+                                   asp-action="Index"
+                                   asp-route-SearchTerm="@Model.SearchTerm"
+                                   asp-route-TaskStatusId="@Model.TaskStatusId"
+                                   asp-route-Priority="@Model.Priority"
+                                   asp-route-SortOrder="@Model.SortOrder"
+                                   asp-route-PageNumber="@(Model.PageNumber + 1)">
+                                    Next
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                }
             }
             else
             {
@@ -165,10 +233,12 @@
                     <p class="tf-muted mb-4">
                         Try changing your search or filter criteria.
                     </p>
-                    <a asp-action="Index" class="btn btn-tf-outline">Clear filters</a>
+                    <a asp-action="Index" class="btn btn-tf-outline">
+                        Clear filters
+                    </a>
                 </div>
             }
+
         </div>
     </div>
-
 </div>

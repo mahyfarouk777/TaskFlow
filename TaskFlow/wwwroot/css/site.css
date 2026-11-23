@@ -1,5 +1,4 @@
 
-
 :root {
     --tf-bg: #101312;
     --tf-surface: #191e1b;
@@ -8,17 +7,19 @@
     --tf-lime: #c5f36b;
     --tf-lime-dark: #a5d94c;
     --tf-text: #f1f4ed;
-    --tf-muted: #9ba69b;
+    --tf-muted: #b2c5a8;
+    --tf-muted-light: #c8d8bd;
+    --tf-muted-dark: #8fa184;
     --tf-danger: #ff7777;
 }
+
+/* GENERAL */
 
 body {
     background: var(--tf-bg);
     color: var(--tf-text);
     font-family: 'Inter', 'Segoe UI', sans-serif;
 }
-
-/* General layout */
 
 .tf-page {
     max-width: 1200px;
@@ -27,7 +28,7 @@ body {
 }
 
 .tf-muted {
-    color: var(--tf-muted) !important;
+    color: var(--tf-muted-light) !important;
 }
 
 .tf-accent {
@@ -42,7 +43,51 @@ body {
     text-transform: uppercase;
 }
 
-/* Hero */
+/* NAVBAR */
+
+.tf-navbar {
+    background: linear-gradient(90deg, #172019, #191e1b 60%, #202a21);
+    border-bottom: 1px solid #374737;
+    padding: 16px 0;
+}
+
+.tf-brand {
+    color: var(--tf-text) !important;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.tf-brand-mark {
+    color: var(--tf-lime);
+    font-weight: 900;
+    margin-right: 6px;
+}
+
+.tf-navbar .nav-link {
+    color: var(--tf-muted) !important;
+    font-weight: 550;
+    padding: 10px 14px !important;
+    transition: color .2s ease;
+}
+
+    .tf-navbar .nav-link:hover,
+    .tf-navbar .nav-link:focus {
+        color: var(--tf-lime) !important;
+    }
+
+.tf-navbar .navbar-toggler {
+    border-color: var(--tf-border);
+}
+
+    .tf-navbar .navbar-toggler:focus {
+        box-shadow: 0 0 0 3px rgba(197, 243, 107, .15);
+    }
+
+.tf-navbar .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* HERO */
 
 .tf-hero {
     position: relative;
@@ -62,7 +107,7 @@ body {
         top: -120px;
         border: 1px solid rgba(197, 243, 107, .15);
         border-radius: 50%;
-        box-shadow: 0 0 0 35px rgba(197,243,107,.025), 0 0 0 70px rgba(197,243,107,.025);
+        box-shadow: 0 0 0 35px rgba(197, 243, 107, .025), 0 0 0 70px rgba(197, 243, 107, .025);
         pointer-events: none;
     }
 
@@ -74,12 +119,12 @@ body {
     }
 
     .tf-hero p {
-        color: #bdc9bb;
+        color: var(--tf-muted-light);
         max-width: 580px;
         line-height: 1.8;
     }
 
-/* Cards */
+/* CARDS */
 
 .tf-card {
     height: 100%;
@@ -103,13 +148,13 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 14px;
-    background: rgba(197,243,107,.12);
+    background: rgba(197, 243, 107, .12);
     color: var(--tf-lime);
     font-size: 1.5rem;
     margin-bottom: 25px;
 }
 
-/* Buttons */
+/* BUTTONS */
 
 .btn-tf {
     background: var(--tf-lime);
@@ -138,12 +183,12 @@ body {
 }
 
     .btn-tf-outline:hover {
-        background: rgba(197,243,107,.1);
+        background: rgba(197, 243, 107, .1);
         color: var(--tf-lime);
         border-color: var(--tf-lime);
     }
 
-/* Page headers */
+/* PAGE HEADERS */
 
 .tf-page-header {
     background: linear-gradient(120deg, #202c22, #171e19);
@@ -159,7 +204,7 @@ body {
         letter-spacing: -1.5px;
     }
 
-/* Forms */
+/* FORMS */
 
 .tf-form-card {
     background: var(--tf-surface);
@@ -182,19 +227,19 @@ body {
             background: #111713;
             color: white;
             border-color: var(--tf-lime);
-            box-shadow: 0 0 0 3px rgba(197,243,107,.12);
+            box-shadow: 0 0 0 3px rgba(197, 243, 107, .12);
         }
 
         .tf-form-card .form-control::placeholder {
-            color: #778278;
+            color: var(--tf-muted-dark);
         }
 
     .tf-form-card .form-label {
-        color: #dce5d9;
+        color: var(--tf-muted-light);
         font-weight: 650;
     }
 
-/* Tables */
+/* TABLES */
 
 .tf-table {
     color: var(--tf-text);
@@ -222,19 +267,19 @@ body {
         background: #232d25;
     }
 
-/* Badges */
+/* BADGES */
 
 .tf-badge {
     display: inline-block;
     padding: 7px 12px;
     border-radius: 30px;
-    background: rgba(197,243,107,.12);
+    background: rgba(197, 243, 107, .12);
     color: var(--tf-lime);
     font-size: .75rem;
     font-weight: 750;
 }
 
-/* Information panels */
+/* INFORMATION PANELS */
 
 .tf-info {
     background: var(--tf-surface-2);
@@ -254,17 +299,17 @@ body {
         color: var(--tf-text);
     }
 
-/* Danger */
+/* DANGER */
 
 .tf-danger {
-    border: 1px solid rgba(255,119,119,.35);
-    background: rgba(255,119,119,.08);
+    border: 1px solid rgba(255, 119, 119, .35);
+    background: rgba(255, 119, 119, .08);
     color: #ffaaaa;
     border-radius: 14px;
     padding: 20px;
 }
 
-/* Footer / links */
+/* LINKS */
 
 .tf-link {
     color: var(--tf-lime);
@@ -280,6 +325,125 @@ hr {
     border-color: var(--tf-border);
     opacity: 1;
 }
+
+/* FOOTER */
+
+.tf-footer {
+    background: linear-gradient(90deg, #172019, #191e1b 60%, #202a21);
+    border-top: 1px solid #374737;
+    color: var(--tf-muted);
+    padding: 22px 0;
+    margin-top: 60px;
+}
+
+    .tf-footer a {
+        color: var(--tf-lime);
+        text-decoration: none;
+    }
+
+        .tf-footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+/* AUTHENTICATION PAGES */
+
+.tf-auth-page {
+    min-height: 75vh;
+    display: grid;
+    grid-template-columns: minmax(320px, 480px) minmax(300px, 1fr);
+    align-items: center;
+    justify-content: center;
+    gap: 70px;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 60px 24px;
+}
+
+.tf-auth-card {
+    background: var(--tf-surface);
+    border: 1px solid var(--tf-border);
+    border-radius: 22px;
+    padding: 38px;
+    width: 100%;
+}
+
+.tf-auth-title {
+    color: var(--tf-text);
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+}
+
+.tf-auth-card .form-label {
+    color: var(--tf-muted-light);
+    font-weight: 600;
+}
+
+.tf-input {
+    background: #101312 !important;
+    color: var(--tf-text) !important;
+    border: 1px solid var(--tf-border) !important;
+    border-radius: 10px !important;
+    padding: 13px 15px !important;
+}
+
+    .tf-input:focus {
+        border-color: var(--tf-lime) !important;
+        box-shadow: 0 0 0 3px rgba(197, 243, 107, .12) !important;
+    }
+
+    .tf-input::placeholder {
+        color: var(--tf-muted-dark);
+    }
+
+.tf-auth-card .form-check-input {
+    background-color: #101312;
+    border-color: #59645a;
+}
+
+    .tf-auth-card .form-check-input:checked {
+        background-color: var(--tf-lime);
+        border-color: var(--tf-lime);
+    }
+
+.tf-auth-divider {
+    height: 1px;
+    background: var(--tf-border);
+    margin: 26px 0;
+}
+
+.tf-auth-side {
+    align-items: center;
+    padding: 35px;
+}
+
+    .tf-auth-side h2 {
+        color: var(--tf-text);
+        font-size: 2.7rem;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        max-width: 400px;
+        margin-bottom: 18px;
+    }
+
+    .tf-auth-side p {
+        color: var(--tf-muted-light);
+        max-width: 400px;
+        line-height: 1.8;
+    }
+
+.tf-auth-mark {
+    color: var(--tf-lime);
+    font-size: 8rem;
+    font-weight: 900;
+    letter-spacing: -12px;
+    line-height: 1.2;
+    margin-bottom: 25px;
+}
+
+/* RESPONSIVE */
 
 @media (max-width: 768px) {
     .tf-hero {
@@ -297,174 +461,23 @@ hr {
     .tf-hero h1 {
         letter-spacing: -1.5px;
     }
-    /* NAVBAR */
+}
 
-    .tf-navbar {
-        background: #191e1b;
-        border-bottom: 1px solid #303a32;
-        padding: 16px 0;
-    }
-
-    .tf-brand {
-        color: #f1f4ed !important;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-    }
-
-    .tf-brand-mark {
-        color: #c5f36b;
-        font-weight: 900;
-        margin-right: 6px;
-    }
-
-    .tf-navbar .nav-link {
-        color: #9ba69b !important;
-        font-weight: 500;
-        padding: 10px 14px !important;
-        transition: color .2s ease;
-    }
-
-        .tf-navbar .nav-link:hover {
-            color: #c5f36b !important;
-        }
-
-    .tf-navbar .navbar-toggler {
-        border-color: #303a32;
-    }
-
-    .tf-navbar .navbar-toggler-icon {
-        filter: invert(1);
-    }
-
-    /* FOOTER */
-
-    .tf-footer {
-        background: #191e1b;
-        border-top: 1px solid #303a32;
-        color: #9ba69b;
-        padding: 22px 0;
-        margin-top: 60px;
-    }
-
-        .tf-footer a {
-            color: #c5f36b;
-            text-decoration: none;
-        }
-
-            .tf-footer a:hover {
-                text-decoration: underline;
-            }
-
-    /* AUTHENTICATION PAGES */
-
+@media (max-width: 767px) {
     .tf-auth-page {
-        min-height: 75vh;
-        display: grid;
-        grid-template-columns: minmax(320px, 480px) minmax(300px, 1fr);
-        align-items: center;
-        justify-content: center;
-        gap: 70px;
-        max-width: 1150px;
-        margin: 0 auto;
-        padding: 60px 24px;
+        display: block;
+        padding: 35px 16px;
     }
 
     .tf-auth-card {
-        background: #191e1b;
-        border: 1px solid #303a32;
-        border-radius: 22px;
-        padding: 38px;
-        width: 100%;
+        padding: 26px;
     }
 
     .tf-auth-title {
-        color: #f1f4ed;
-        font-size: 2.5rem;
-        font-weight: 800;
-        letter-spacing: -1.5px;
-        margin-bottom: 12px;
-    }
-
-    .tf-auth-card .form-label {
-        color: #f1f4ed;
-        font-weight: 600;
-    }
-
-    .tf-input {
-        background: #101312 !important;
-        color: #f1f4ed !important;
-        border: 1px solid #303a32 !important;
-        border-radius: 10px !important;
-        padding: 13px 15px !important;
-    }
-
-        .tf-input:focus {
-            border-color: #c5f36b !important;
-            box-shadow: 0 0 0 3px rgba(197, 243, 107, .12) !important;
-        }
-
-        .tf-input::placeholder {
-            color: #69756a;
-        }
-
-    .tf-auth-card .form-check-input {
-        background-color: #101312;
-        border-color: #59645a;
-    }
-
-        .tf-auth-card .form-check-input:checked {
-            background-color: #c5f36b;
-            border-color: #c5f36b;
-        }
-
-    .tf-auth-divider {
-        height: 1px;
-        background: #303a32;
-        margin: 26px 0;
+        font-size: 2rem;
     }
 
     .tf-auth-side {
-        align-items: center;
-        padding: 35px;
+        padding: 35px 10px;
     }
-
-        .tf-auth-side h2 {
-            color: #f1f4ed;
-            font-size: 2.7rem;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            max-width: 400px;
-            margin-bottom: 18px;
-        }
-
-        .tf-auth-side p {
-            max-width: 400px;
-            line-height: 1.8;
-        }
-
-    .tf-auth-mark {
-        color: #c5f36b;
-        font-size: 8rem;
-        font-weight: 900;
-        letter-spacing: -12px;
-        line-height: 1.2;
-        margin-bottom: 25px;
-    }
-
-    @media (max-width: 767px) {
-        .tf-auth-page {
-            display: block;
-            padding: 35px 16px;
-        }
-
-        .tf-auth-card {
-            padding: 26px;
-        }
-
-        .tf-auth-title {
-            font-size: 2rem;
-        }
-    }
-
-
 }

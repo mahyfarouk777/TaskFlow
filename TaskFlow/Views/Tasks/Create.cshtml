@@ -56,14 +56,15 @@
                     </div>
 
                     <div class="row g-3 mb-4">
+
                         <div class="col-md-6">
-                            <label asp-for="Status" class="form-label">Status</label>
-                            <select asp-for="Status" class="form-select">
-                                <option value="To Do">To Do</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
+                            <label asp-for="TaskStatusId" class="form-label">Status</label>
+                            <select asp-for="TaskStatusId"
+                                    asp-items="ViewBag.TaskStatusId"
+                                    class="form-select">
+                                <option value="">-- Select status --</option>
                             </select>
-                            <span asp-validation-for="Status" class="text-danger small"></span>
+                            <span asp-validation-for="TaskStatusId" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
@@ -75,6 +76,7 @@
                             </select>
                             <span asp-validation-for="Priority" class="text-danger small"></span>
                         </div>
+
                     </div>
 
                     <div class="mb-4">
